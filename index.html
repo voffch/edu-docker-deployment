@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Your IP</title>
+    <meta name="description" content="educational page - gets your IP address from https://www.ipify.org/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
+    <link rel="manifest" href="/favicon/site.webmanifest">
+  </head>
+  <body>
+    <div>Your IPv4 address is: <span id="ipv4" class="ip-address">checking...</span></div>
+    <div>Your IPv6 address is: <span id="ipv6" class="ip-address">checking...</span></div>
+    <script>
+      const ipContainers = document.getElementsByClassName('ip-address');
+      for (const container of ipContainers) {
+        getIP(container);
+      }
+
+      function getIP(target) {
+        const ipv6 = (target.id == 'ipv6');
+        const url = ipv6 ? 'https://api6.ipify.org' : 'https://api.ipify.org';
+        const myRequest = new Request(url);
+        fetch(myRequest)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(`HTTP error, status = ${response.status}, url = ${url}`);
+            }
+            return response.text();
+          })
+          .then((text) => {
+            target.innerText = text;
+          })
+          .catch((error) => {
+            target.innerText = ipv6 ? 'none (you may not be using IPv6)' : `Error: ${error.message}`;
+          });
+      }
+    </script>
+  </body>
+</html>
